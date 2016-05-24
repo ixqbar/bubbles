@@ -6,16 +6,24 @@
 	<!-- http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html -->
 	<id>release</id>
 	<formats>
-		<format>zip</format>
+		<format>tar.gz</format>
 	</formats>
 	<fileSets>
-	   <fileSet>
-            <directory>${project.basedir}/src/bin</directory>
-            <outputDirectory>bin</outputDirectory>
-        </fileSet>
+		<fileSet>
+			<directory>${project.basedir}/src/bin</directory>
+			<outputDirectory>bin</outputDirectory>
+			<lineEnding>unix</lineEnding>
+			<fileMode>0755</fileMode>
+			<includes>
+				<include>*.sh</include>
+			</includes>
+		</fileSet>
 		<fileSet>
 			<directory>${project.basedir}/src/main/resources</directory>
 			<outputDirectory>config</outputDirectory>
+			<includes>
+				<include>*.xml</include>
+			</includes>
 		</fileSet>
 	</fileSets>
 
