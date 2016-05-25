@@ -1,0 +1,25 @@
+<script src="http://cdn.bootcss.com/json2/20150503/json2.js"></script>
+<script>
+var websocket = new WebSocket('ws://localhost:8080/websocket');
+websocket.onopen = function (evt) {
+    console.log("Connected to WebSocket server.");
+    var data = JSON.stringify({
+        s : ["player.login", "123-456", "cea19f25fcc226ea4acc27b5a8aeb592"],
+        i : 1
+    });
+    websocket.send(data);
+};
+
+websocket.onclose = function (evt) {
+    console.log("Disconnected");
+    websocket = null;
+};
+
+websocket.onmessage = function (evt) {
+    console.log('Retrieved data from server: ' + evt.data);
+};
+
+websocket.onerror = function (evt, e) {
+    console.log('Error occured: ' + evt.data);
+};
+</script>
