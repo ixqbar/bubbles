@@ -17,7 +17,7 @@ public class AppTest {
 		
 		WebConfig.bootstrap();
 		
-		String params = "{\"s\":[\"player.notice\",\"123-456\", \"tet\"], \"i\":1}";
+		String params = "{\"s\":[\"notice.push\",\"123-456\", \"tet\"], \"i\":1}";
 		String token = WebUtil.md5(String.format("%s%s", params, WebConfig.tokenKey).getBytes());
 		
 		String response = webHttp.post("http://localhost:8080/?token=" + token, params);
