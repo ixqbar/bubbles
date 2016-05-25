@@ -83,11 +83,6 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>${assembly.version}</version>
 				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>cn.linjujia.web.ScanLogin.App</mainClass>
-						</manifest>
-					</archive>
 					<descriptors>
 						<descriptor>assembly.xml</descriptor>
 					</descriptors>
