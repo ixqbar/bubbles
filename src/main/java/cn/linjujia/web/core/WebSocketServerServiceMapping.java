@@ -12,6 +12,7 @@ public class WebSocketServerServiceMapping {
 
 	static {
 		servicesMapping.put("player.login", Arrays.asList(new Class[] { String.class, String.class }, null));
-		servicesMapping.put("player.notice", Arrays.asList(new Class[] { String.class, String.class }, null));
+		servicesMapping.put("notice.push", Arrays.asList(new Class[] { String.class, String.class }, null));
+		servicesMapping.put("notice.pushAll", Arrays.asList(new Class[] { String.class }, null));
 	}
 }
