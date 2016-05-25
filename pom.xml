@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.linjujia.web</groupId>
-	<artifactId>ScanLogin</artifactId>
+	<artifactId>NoticePush</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>ScanLogin</name>
-	<url>http://maven.apache.org</url>
+	<name>NoticePush</name>
+    <url>http://xingqiba.sinaapp.com/</url>
 
 	<properties>
 		<jdk.version>1.8</jdk.version>
@@ -75,7 +75,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>ScanLogin</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 		<plugins>
 
 			<plugin>
