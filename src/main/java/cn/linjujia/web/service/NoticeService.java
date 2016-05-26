@@ -26,6 +26,10 @@ public class NoticeService extends WebSocketServerService {
 		
 		try {
 			for (Map.Entry<String, WebSocketClient> entry: WebConfig.clientMapping.entrySet()) {
+				if (!entry.getValue().channel.isActive()) {
+					continue;
+				}
+				
 				if (entry.getKey().equals(uuid)) {
 					WebSocketServerResponse webSocketServerResponse = new WebSocketServerResponse();
 					webSocketServerResponse.n = true;
@@ -51,13 +55,17 @@ public class NoticeService extends WebSocketServerService {
 		
 		try {
 			for (Map.Entry<String, WebSocketClient> entry: WebConfig.clientMapping.entrySet()) {
+				if (!entry.getValue().channel.isActive()) {
+					continue;
+				}
+				
 				WebSocketServerResponse webSocketServerResponse = new WebSocketServerResponse();
 				webSocketServerResponse.n = true;
 				webSocketServerResponse.c = 0;
 				webSocketServerResponse.d = notice;
 				webSocketServerResponse.i = entry.getValue().noticeIndex.getAndIncrement();
 				entry.getValue().channel.writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(webSocketServerResponse)));
-				logger.info("push notice {} {}", entry.getKey(), notice);
+				logger.info("push notice {} {} success", entry.getKey(), notice);
 			}
 		} finally {
 			result.put("success", true);
