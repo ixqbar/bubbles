@@ -9,9 +9,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.CharsetUtil;
@@ -32,18 +32,18 @@ public class WebSocketServerIndexPageHandler extends SimpleChannelInboundHandler
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
         // Handle a bad request.
-        if (!req.getDecoderResult().isSuccess()) {
+        if (!req.decoderResult().isSuccess()) {
             sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST), null);
             return;
         }
 
         // Allow only POST methods.
-        if (req.getMethod() != HttpMethod.POST) {
+        if (req.method() != HttpMethod.POST) {
             sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.FORBIDDEN), null);
             return;
         }
         
-        QueryStringDecoder decoder = new QueryStringDecoder(req.getUri());
+        QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
         if (!decoder.parameters().containsKey("token")) {
         	sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK), "ERROR_TOKEN");
             return;
@@ -59,7 +59,7 @@ public class WebSocketServerIndexPageHandler extends SimpleChannelInboundHandler
         buf.readBytes(contentBytes);    
         String postMessage = new String(contentBytes,"UTF-8");
         
-        logger.info("post {}, get {}", postMessage, req.getUri());
+        logger.info("post {}, get {}", postMessage, req.uri());
         
         logger.info("tokenKey {}, token {}", WebConfig.tokenKey, decoder.parameters().get("token"));
         
@@ -88,19 +88,19 @@ public class WebSocketServerIndexPageHandler extends SimpleChannelInboundHandler
     private static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res, String content) {
     	ByteBuf buf;
     	
-        if (res.getStatus().code() != 200) {
-            buf = Unpooled.copiedBuffer(res.getStatus().toString(), CharsetUtil.UTF_8);
+        if (res.status().code() != 200) {
+            buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
         } else {
         	buf = Unpooled.copiedBuffer(content, CharsetUtil.UTF_8);
         }
         
         res.content().writeBytes(buf);
         buf.release();
-        HttpHeaders.setContentLength(res, res.content().readableBytes());
+        HttpUtil.setContentLength(res, res.content().readableBytes());
 
         // Send the response and close the connection if necessary.
         ChannelFuture f = ctx.channel().writeAndFlush(res);
-        if (!HttpHeaders.isKeepAlive(req) || res.getStatus().code() != 200) {
+        if (!HttpUtil.isKeepAlive(req) || res.status().code() != 200) {
             f.addListener(ChannelFutureListener.CLOSE);
         }
     }
