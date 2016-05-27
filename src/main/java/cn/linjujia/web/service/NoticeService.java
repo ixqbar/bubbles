@@ -24,6 +24,7 @@ public class NoticeService extends WebSocketServerService {
 			throw new WebSokcetServerServiceException("error_token");
 		}
 		
+		boolean success = false;
 		try {
 			for (Map.Entry<String, WebSocketClient> entry: WebConfig.clientMapping.entrySet()) {
 				if (!entry.getValue().channel.isActive()) {
@@ -38,11 +39,12 @@ public class NoticeService extends WebSocketServerService {
 					webSocketServerResponse.i = entry.getValue().noticeIndex.getAndIncrement();
 					entry.getValue().channel.writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(webSocketServerResponse)));
 					logger.info("push notice {} {}", uuid, notice);
+					success = true;
 					break;
 				}
 			}
 		} finally {
-			result.put("success", true);
+			result.put("success", success);
 		}
 		
 		return result;
@@ -53,6 +55,7 @@ public class NoticeService extends WebSocketServerService {
 			throw new WebSokcetServerServiceException("error_token");
 		}
 		
+		int success = 0;
 		try {
 			for (Map.Entry<String, WebSocketClient> entry: WebConfig.clientMapping.entrySet()) {
 				if (!entry.getValue().channel.isActive()) {
@@ -66,9 +69,10 @@ public class NoticeService extends WebSocketServerService {
 				webSocketServerResponse.i = entry.getValue().noticeIndex.getAndIncrement();
 				entry.getValue().channel.writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(webSocketServerResponse)));
 				logger.info("push notice {} {} success", entry.getKey(), notice);
+				success += 1;
 			}
 		} finally {
-			result.put("success", true);
+			result.put("success", success);
 		}
 		
 		return result;

@@ -67,6 +67,11 @@ public class WebSocketServerMessageHandler implements Runnable {
 			int serviceSize = webSocketServerRequest.s.size();
 			String[] serviceNameDetail = StringUtils.split(serviceName, ".", 2);
 			
+			if (isWebSocketClient 
+					&& serviceNameDetail[0].equals("notice")) {
+				throw new Exception("error_message");
+			}
+			
 			Class<?>[] paramClass = null;
 			Object[] serviceParams = null;
 			
